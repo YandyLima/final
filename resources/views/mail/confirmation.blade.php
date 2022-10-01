@@ -4,10 +4,10 @@
     <meta charset="utf-8">
 </head>
 <body>
-<h2>Hola {{ $first_name }}, gracias por registrarte en <strong>al Gestor de Solicitudes</strong> !</h2>
+<h2>Hello {{ $first_name }}, thanks for signing up <strong>to Request Manager</strong> !</h2>
 
-<h2>Tu contraseña es: {{ $password }}</h2>
-<h4>Inicia sesión <a href="{{ asset(route('login')) }}" >aquí</a></h4>
+<h2>your password is: {{ $password }}</h2>
+<h4>Log in <a href="{{ asset(route('login')) }}" >here</a></h4>
 
 </body>
 </html>

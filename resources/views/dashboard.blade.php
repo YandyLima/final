@@ -9,9 +9,10 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="p-2 bg-white overflow-hidden shadow-sm sm:rounded-lg">
-
-                <a type="button" href="{{ route('users.create') }}" class="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Create</a>
-
+                @can('role-admin' ,Auth::user())
+                    <a type="button" href="{{ route('users.create') }}"
+                       class="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Create</a>
+                @endcan
                 <div class="p-6 bg-white border-b border-gray-200">
                     <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
                         <table class="w-full text-sm text-center text-gray-500 dark:text-gray-400">
@@ -127,28 +128,34 @@
                                     </td>
                                     <td class="py-4 px-4">
                                         <div class="inline-flex rounded-md shadow-sm" role="group">
-                                            <a type="button"
-                                               href="{{ route('users.show', $user->id) }}"
-                                               class="py-2 px-4 text-sm font-medium text-gray-900 bg-white rounded-l-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">
-                                                <i class="px-2 text-blue-700 fa-solid fa-eye fa-2xl"></i>
-                                            </a>
+                                            @can('role-operator-admin',$user)
 
-                                            <a type="button"
-                                               href="{{ route('users.edit', $user->id) }}"
-                                               class="py-2 px-4 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">
-                                                <i class="text-yellow-400 fa-solid fa-pen-to-square fa-2xl"></i>
-                                            </a>
-                                            @if(Auth::user()->id!=$user->id)
-                                                <form action="{{ route('users.destroy', $user->id) }}"
-                                                method="post">
-                                                    @method('delete')
-                                                    @csrf
-                                                    <button type="submit"
-                                                            class="py-2 px-4 text-sm font-medium text-gray-900 bg-white rounded-r-md border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">
-                                                        <i class="text-red-600 fa-solid fa-trash-can fa-2xl"></i>
-                                                    </button>
-                                                </form>
-                                            @endif
+                                                <a type="button"
+                                                   href="{{ route('users.show', $user->id) }}"
+                                                   class="py-2 px-4 text-sm font-medium text-gray-900 bg-white rounded-l-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">
+                                                    <i class="px-2 text-blue-700 fa-solid fa-eye fa-2xl"></i>
+                                                </a>
+                                            @endcan
+                                            @can('role-admin',$user)
+                                                <a type="button"
+                                                   href="{{ route('users.edit', $user->id) }}"
+                                                   class="py-2 px-4 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">
+                                                    <i class="text-yellow-400 fa-solid fa-pen-to-square fa-2xl"></i>
+                                                </a>
+                                            @endcan
+                                            @can('role-admin',$user)
+                                                @if(Auth::user()->id!=$user->id)
+                                                    <form action="{{ route('users.destroy', $user->id) }}"
+                                                          method="post">
+                                                        @method('delete')
+                                                        @csrf
+                                                        <button type="submit"
+                                                                class="py-2 px-4 text-sm font-medium text-gray-900 bg-white rounded-r-md border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">
+                                                            <i class="text-red-600 fa-solid fa-trash-can fa-2xl"></i>
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            @endcan
                                         </div>
 
                                     </td>

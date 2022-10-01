@@ -60,11 +60,29 @@
                             <!-- STATUS -->
                             <p class="font-bold text-gray-400 dark:text-gray-400"> STATUS </p>
                             <h5 class="mb-3 w-full text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                                 {{ $user->status->name }}</h5>
-                            <!-- STATUS -->
+                                {{ $user->status->name }}</h5>
+                            <!-- ROLE -->
                             <p class="font-bold text-gray-400 dark:text-gray-400"> ROLE </p>
                             <h5 class="mb-3 w-full text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                 {{ $user->role->name }}</h5>
+                            <div class="inline-flex rounded-md shadow-sm" role="group">
+                                <form method="POST" action="{{ route('update.status', $user->id) }}">
+                                    @csrf
+                                    <input type="hidden" name="status_id" value="2">
+                                    <button type="submit"
+                                            class="text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+                                        Accepted
+                                    </button>
+                                </form>
+                                <form method="POST" action="{{ route('update.status', $user->id) }}">
+                                    @csrf
+                                    <input type="hidden" name="status_id" value="3">
+                                    <button type="submit"
+                                            class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+                                        Refused
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>

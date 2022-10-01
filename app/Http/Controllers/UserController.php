@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\UserStatus;
 use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -21,9 +22,10 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function statusShow()
     {
-        //
+        $status = Auth::user()->status->name;
+        return view('users.status', compact('status'));
     }
 
     /**
@@ -33,6 +35,7 @@ class UserController extends Controller
      */
     public function create()
     {
+        $this->authorize('role-admin', User::class);
         return view('users.create');
     }
 
@@ -44,6 +47,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+
         $request->validate([
             'first_name' => ['required', 'string', 'max:255'],
             'second_name' => ['string', 'max:255'],
@@ -55,7 +59,7 @@ class UserController extends Controller
             'photo' => ['required', 'file', 'mimes:jpg,png', 'dimensions:width=600,height=400'],
             'years_working' => ['required', 'string', 'max:80'],
             'salary' => ['required', 'numeric'],
-            'email' => ['required','email', 'unique:users'],
+            'email' => ['required', 'email', 'unique:users'],
             'email_verified_at' => ['confirmed', 'max:255'],
         ]);
         $fileName = $request->file('photo')->store('uploads', 'public');
@@ -106,6 +110,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
+        $this->authorize('role-operator-admin', User::class);
         $user = User::find($id);
         return view('users.show', compact('user'));
     }
@@ -118,6 +123,7 @@ class UserController extends Controller
      */
     public function edit($id)
     {
+        $this->authorize('role-admin', User::class);
         $user = User::find($id);
         $statuses = UserStatus::where('id', '<>', $user->status_id)->get();
         $roles = Role::where('id', '<>', $user->role_id)->get();
@@ -133,6 +139,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->authorize('role-admin', User::class);
         $user = User::find($id);
 
         $validate = $request->validate([
@@ -155,7 +162,19 @@ class UserController extends Controller
             $validate['photo'] = $request->file('photo')->store('uploads', 'public');
             Storage::delete($user->photo);
         }
+        $user_status = $user->status_id;
         $user->update($validate);
+        if ($user_status != $request->status_id) {
+            if ($user->status_id == 2 || $user->status_id == 3) {
+                $information = ['status' => $user->status->name, 'first_name' => $user->first_name, 'first_lastname' => $user->first_lastname];
+                $content = 'Estado se la solicitud';
+                $to = $user->email;
+                Mail::send('mail.status', $information, function ($msj) use ($content, $to) {
+                    $msj->subject($content);
+                    $msj->to($to);
+                });
+            }
+        }
         return redirect('/dashboard')->withSuccess('Usuario Actualizado Con Exito');
     }
 
@@ -168,8 +187,24 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
+        $this->authorize('role-admin', User::class);
         $user = User::find($id);
         $user->delete();
         return redirect()->route('dashboard')->with('success', 'Usuario Borrado Con Exito');
+    }
+
+    public function update_status(Request $request, $id){
+        $this->authorize('role-operator-admin', User::class);
+        $user = User::find($id);
+        $user->status_id = $request->status_id;
+        $user->save();
+        $information = ['status' => $user->status->name, 'first_name' => $user->first_name, 'first_lastname' => $user->first_lastname];
+        $content = 'Estado se la solicitud';
+        $to = $user->email;
+        Mail::send('mail.status', $information, function ($msj) use ($content, $to) {
+            $msj->subject($content);
+            $msj->to($to);
+        });
+        return redirect()->route('dashboard')->with('success', 'Usuario Actualizado Con Exito');
     }
 }
