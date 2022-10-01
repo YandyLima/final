@@ -32,8 +32,17 @@ class User extends Authenticatable
         'email',
         'email_verified_at',
         'password',
+        'status_id',
+        'role_id',
     ];
 
+    public function status(){
+        return $this->hasOne('App\Models\UserStatus', 'id', 'status_id');
+    }
+
+    public function role(){
+        return $this->hasOne('App\Models\Role', 'id', 'role_id');
+    }
     /**
      * The attributes that should be hidden for serialization.
      *

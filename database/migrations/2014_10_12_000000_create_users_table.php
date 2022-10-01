@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('second_lastname');
             $table->string('married_name')->nullable();
             $table->string('date_of_birth');
-            $table->string('dpi');
+            $table->string('dpi')->unique();
             $table->string('profession')->nullable();
             $table->string('photo');
             $table->string('years_working')->nullable();
@@ -29,6 +29,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->unsignedSmallInteger('status_id');
+            $table->unsignedSmallInteger('role_id');
             $table->rememberToken();
             $table->timestamps();
         });

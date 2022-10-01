@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,11 +17,15 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/login');
+});
+Route::post('user-register',[UserController::class, 'store'])->name('user.register');
+Route::prefix('/')->middleware('auth')->group(function () {
+    Route::resource('users', UserController::class);
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+Route::get('/dashboard', [RegisteredUserController::class, 'index'])->middleware(['auth'])->name('dashboard');
+
+Route::get('/profile', [ProfileController::class,'profile'])->middleware(['auth'])->name('profile');
 
 require __DIR__.'/auth.php';
